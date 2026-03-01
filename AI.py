@@ -117,7 +117,6 @@ class AKAI:
         print(f"\n{Colors.BLUE}[*]{Colors.END} Generating image (this may take a moment)...")
         
         try:
-            # Step 1: Generate image
             params = {'text': enhanced}
             url = f"https://zecora0.serv00.net/ai/NanoBanana.php?{urlencode(params)}"
             
@@ -142,7 +141,6 @@ class AKAI:
             print(f"{Colors.GREEN}[✓]{Colors.END} Image generated!")
             print(f"{Colors.BLUE}[*]{Colors.END} Downloading from: {img_url[:50]}...")
             
-            # Step 2: Download image with retries
             max_attempts = 3
             
             for attempt in range(max_attempts):
@@ -153,13 +151,12 @@ class AKAI:
                     
                     img_response = requests.get(
                         img_url, 
-                        timeout=180,  # 3 minutes timeout
+                        timeout=180,  
                         stream=True,
                         headers={'User-Agent': 'Mozilla/5.0'}
                     )
                     
                     if img_response.status_code == 200:
-                        # Download in chunks
                         total_size = 0
                         with open(output, 'wb') as f:
                             for chunk in img_response.iter_content(chunk_size=8192):
@@ -171,7 +168,7 @@ class AKAI:
                         print(f"{Colors.GREEN}[✓]{Colors.END} Downloaded successfully!")
                         print(f"{Colors.GREEN}[✓]{Colors.END} Saved: {Colors.BOLD}{os.path.abspath(output)}{Colors.END}")
                         print(f"{Colors.GREEN}[✓]{Colors.END} Size: {file_size:.1f} KB")
-                        return  # Success!
+                        return  
                     else:
                         print(f"{Colors.RED}[✗]{Colors.END} Download failed: HTTP {img_response.status_code}")
                         
@@ -221,7 +218,6 @@ class AKAI:
         print(f"\n{Colors.BLUE}[*]{Colors.END} Translating...")
         
         try:
-            # Try Google Translate first (fastest)
             url = f"https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl={target}&dt=t&q={quote(text)}"
             r = requests.get(url, timeout=10)
             
@@ -237,7 +233,6 @@ class AKAI:
         except:
             pass
         
-        # Fallback to MyMemory
         try:
             url = f"https://api.mymemory.translated.net/get?q={quote(text)}&langpair=auto|{target}"
             r = requests.get(url, timeout=10)
@@ -670,7 +665,7 @@ main();
             
             if choice == "1":
                 img = img.filter(ImageFilter.SHARPEN)
-                img = img.filter(ImageFilter.SHARPEN)  # Apply twice
+                img = img.filter(ImageFilter.SHARPEN)  
                 print(f"{Colors.GREEN}[✓]{Colors.END} Sharpened")
                 
             elif choice == "2":
@@ -683,16 +678,12 @@ main();
                 img = enhancer.enhance(1.3)
                 print(f"{Colors.GREEN}[✓]{Colors.END} Contrast increased")
                 
-            else:  # Auto enhance
-                # Sharpen
+            else:  
                 img = img.filter(ImageFilter.SHARPEN)
-                # Enhance color
                 enhancer = ImageEnhance.Color(img)
                 img = enhancer.enhance(1.2)
-                # Enhance contrast
                 enhancer = ImageEnhance.Contrast(img)
                 img = enhancer.enhance(1.1)
-                # Enhance sharpness
                 enhancer = ImageEnhance.Sharpness(img)
                 img = enhancer.enhance(1.3)
                 print(f"{Colors.GREEN}[✓]{Colors.END} Auto enhanced")
